@@ -1,9 +1,10 @@
-language: generic 
+language: ruby 
 sudo: required
 services:
   - docker:
 
 before_install:
+  - gem install bundler
   - cd docker_kube/chapter6/frontend
   - docker build -t thom/docker-fe -f Dockerfile.dev .
 
