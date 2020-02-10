@@ -1,0 +1,11 @@
+language: generic 
+sudo: required
+services:
+  - docker:
+
+before_install:
+  - cd docker_kube/chapter6/frontend
+  - docker build -t thom/docker-fe -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true thom/docker-fe npm run test -- --coverage
