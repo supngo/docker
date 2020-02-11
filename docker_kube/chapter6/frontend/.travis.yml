@@ -10,3 +10,17 @@ before_install:
 
 script:
   - docker run -e CI=true thom/docker-fe npm run test -- --coverage
+
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: "us-east-1"
+  app: "docker-fe"
+  env: "Docker-env"
+  bucket_name: "s3 elasticbeanstalk bucket name"
+  bucket_path: "docker"
+  on:
+    branch: master
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: 
+    secure: "$AWS_SECRET_KEY"
