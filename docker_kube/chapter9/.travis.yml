@@ -1,0 +1,39 @@
+language: generic 
+sudo: required
+services:
+  - docker:
+
+before_install:
+  - docker build -t thom/docker-chapter9 -f ./docker_kube/chapter9/client/Dockerfile.dev ./docker_kube/chapter9/client
+
+script:
+  - docker run -e CI=true thom/docker-chapter9 npm run test -- --coverage
+
+after_success:
+  - docker build -t thom/mutli-client ./docker_kube/chapter9/client
+  - docker build -t thom/mutli-nginx ./docker_kube/chapter9/nginx
+  - docker build -t thom/mutli-server ./docker_kube/chapter9/server
+  - docker build -t thom/mutli-worker ./docker_kube/chapter9/worker
+
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Take those images and push them to docker hub
+  - docker push thom/multi-client
+  - docker push thom/multi-nginx
+  - docker push thom/multi-server
+  - docker push thom/multi-worker
+
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: "us-east-1"
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: "s3 elasticbeanstalk bucket name"
+  bucket_path: "multi-docker"
+  on:
+    branch: master
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: 
+    secure: "$AWS_SECRET_KEY"
