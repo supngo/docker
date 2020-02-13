@@ -1,0 +1,38 @@
+# run container with volumes mapping
+docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app image_id
+
+# build image with specified Dockerfile
+docker build -f Dockerfile.dev .
+
+# install minikube
+brew install kubectl
+brew install minikube
+
+# run kubectl
+
+# run pod
+kubectl apply -f client-pod.yml
+kubectl get pods
+
+# run service
+kubectl apply -f client-node-port.yml
+kubectl get services
+
+# get kube VM ip
+minikube ip
+
+# get pod info
+kubectl describe pod client-pod
+
+# delete pod 
+kubectl delete -f client-pod.yml
+
+# run deployent
+kubectl delete -f client-deployment.yml
+kubectl get deployments
+
+# run deployment with specific image
+kubectl set image deployment/client-deployment client=thomdock/docker_kube_client:v2
+
+# connect docker CLI to the docker inside kube virtual machine
+eval $(minikube docker-env)
