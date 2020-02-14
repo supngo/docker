@@ -34,5 +34,22 @@ kubectl get deployments
 # run deployment with specific image
 kubectl set image deployment/client-deployment client=thomdock/docker_kube_client:v2
 
+# display persistent volume
+kubectl get pv
+
 # connect docker CLI to the docker inside kube virtual machine
-eval $(minikube docker-env)
+eval $(minikube docker-env)\
+
+Persistent Volume Claim: what they advertise and claim to have
+Persistent Volume: the real option that they have ahead of time or create on the time of demanding
+
+# create secret
+kubectl create secret generic pgpassword --from-literal PGPASSWORD=postgres_password
+
+# kubernetes nginx ingress:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.28.0/deploy/static/mandatory.yaml
+minikube addons enable ingress
+
+# display minikube dashboard
+minikube dashboard
+
