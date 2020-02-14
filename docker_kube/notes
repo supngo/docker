@@ -53,3 +53,25 @@ minikube addons enable ingress
 # display minikube dashboard
 minikube dashboard
 
+# install ruby and travis in docker
+docker run -it -v $(pwd):/app ruby:2.3 sh
+gem install travis --no-document
+travis login
+copy gcloud auth json file to the container
+travis encrypt-file service-account.json -r supngo/docker
+
+# install Helm v3:
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+# install ingress-nginx:
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm install my-nginx stable/nginx-ingress --set rbac.create=true
+
+# create service account on gcloud kube (Helm v2) Helm v3 no longer uses Tiller
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+helm init --service-account tiller --upgrade
+
+
